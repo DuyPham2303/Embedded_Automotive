@@ -85,16 +85,13 @@ __Update_event__: chu kỳ tràn, hay nói cách khác chính là khoảng thờ
 
 ![image](https://github.com/user-attachments/assets/db18e84a-aec4-46d8-9465-14d0e38b6dbb)
 
-### Xác định giá trị Clock cấp cho timer
+## 2.2 Xác định giá trị Clock cấp cho timer
 Để lập trình cho timer hoạt động, ta phải biết được nguồn clock đầu vào cấp là bao nhiêu để xác định được giá trị __TIM_CLK__
 ![image](https://github.com/user-attachments/assets/3df7e40e-3e43-4ccc-9e1a-b8cae7c9cbdf)
 __Ví dụ__: xác định giá trị __TIM_CLK__ cho timer1, với nguồn clock đầu vào là HSI trên stm32f4
 + HSI sẽ có giá trị là 16MHZ, làm clock source cho stm32
 + Lúc này __SYSCLK__ sẽ là 16MHZ, đi qua __AHBx prescaler__ với giá trị là 1, ta sẽ được clock cấp cho __HCLK__ vẫn là 16MHZ
 + Bộ IIM2 sẽ nằm ở bus APB1APB1, vì vậy sau khi clock từ __HCLK__ đi qua __APB1 pprescaler__ với giá trị 1, thì sẽ đưa vào __PCLK1__, chính là nguồn clock chính cấp cho timer1 hoạt động   
-## 2.3 Cách lập trình chọn nguồn clock cho timer 
-### a) Lập trình KeilC xuất ra clock từ HSE
-### b) Lập trình KeilC xuất ra clock từ HSI
 
 # 3. Lập trình timer chớp tắt led trên stm32f407 với thời gian 1s
 + Trước tiên ta sẽ chọn bộ timer phù hợp cho chức năng mà ta muốn làm. Vì timer sẽ được chia ra làm nhiều loại ứng với các chức năng tương ứng. Ở đây ta muốn tạo ra 1 khoảng thời gian delay, tương ứng với chức năng __Update Event__, chính vì vậy ta sẽ chọn các timer 2 -> 5

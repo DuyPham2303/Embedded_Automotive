@@ -24,6 +24,7 @@ __CÁC LOẠI NGẮT__
 Đây là loại ngắt được kích hoạt từ các tín hiệu bên ngoài làm thay đổi điện áp trên các chân GPIO. Chúng ta sẽ có 4 loại cấu hình để phát hiện được tín hiệu ngắt.
 
 ![image](https://github.com/user-attachments/assets/2b29ac92-43f7-46d8-9bb0-aa8c0c7b3906)
+
 __RISING EDGE__: Tin hiệu ngắt được phát hiện khi có sự chuyển đổi trạng thái hiện áp từ LOW sang HIGH
 
 __FALLING EDGE__: Tín hiệu ngắt được phát hiện khi có sự chuyển đổi điện áp từ HIGH sang LOW
@@ -113,10 +114,15 @@ __Tính toán giá trị Update event__
    
   => T_CLK = 0.1 ms
 + Giá trị period  sẽ cho đếm đến giá trị tối đa, chúng ta sẽ dùng 1 hàm khác để tạo ra thời gian 1 giây 
+
 ![image](https://github.com/user-attachments/assets/a7d350fe-d990-4980-b5ce-5eed6e372f96)
+
 + Ta tạo ra 1 hàm __delay_ms__, và đặt bộ đếm về 0, và tiến hành so sánh với giá trị truyền vào ở đây là time * 10 để quy đối giá trị so sánh từ 0.1ms sang 1 ms
+
 ![image](https://github.com/user-attachments/assets/8aa95b74-486b-4f8e-9406-92a862486c9d)
+
 __Viết chương trình chớp tắt led trong hàm main__
+
 ![image](https://github.com/user-attachments/assets/84134ce3-2b5e-4c46-8c9f-c118d15a99d5)
 
 

@@ -30,8 +30,8 @@ __d. Nhược điểm__
 + Không có các cơ chế kiểm tra lỗi hay xác nhận quá trình truyền/nhận thành công hay chưa 
 ### 1.2 Kết nối phần cứng
 __a) Sơ đổ chân__
-
-<img src = "https://github.com/user-attachments/assets/1284a1fb-33f3-4674-a329-3f26ec4426fa" width = "300" height = "150">
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/1284a1fb-33f3-4674-a329-3f26ec4426fa" width = "400" height = "200">
 
 __MOSI__ : master truyền và slave nhận 
 
@@ -43,24 +43,24 @@ __SCLK__ : kiểm soát bởi master, để tạo ra xung clock đồng bộ vi�
 __SS__ : chân chọn chip, master dùng chân này để xác định slave muốn giao tiếp, bằng cách kéo từ high xuống low trong 1 clk trên chân __SS__ của slave
 
 __b) Mắc song song__ 
-
-<img src = "https://github.com/user-attachments/assets/b35998fa-03f4-45e2-8c6a-1f2ae072165e" width = "300" height = "150">
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/b35998fa-03f4-45e2-8c6a-1f2ae072165e" width = "400" height = "200">
 
 __Ưu điểm__: xác định được slave nào bị lỗi nhanh chóng nếu quá trình truyền/nhận bị lỗi do  các slave được nối độc lập với nhau
 
 __Nhược điểm__: tốn nhiều dây ss khi số lượng slave tăng
 
 __c) Mắc nối tiếp__ 
-
-<img src = "https://github.com/user-attachments/assets/3ee82686-49b8-42e0-b1c2-dc569b2e2e77" width = "300" height = "150">
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/3ee82686-49b8-42e0-b1c2-dc569b2e2e77" width = "400" height = "200">
 
 __Ưu điểm__:phần cứng đon giản do Chỉ sử dụng 1 dây SS để master quản lý các slave
 
 __Nhược điểm__: khó khăn trong việc xác định slave nào bị lỗi khi data truyền/nhận sai, do các slave được mắc nối tiếp với nhau
 
 ### 1.3 Quá trình truyền dữ liệu
-
-<img src = "https://github.com/user-attachments/assets/36c91fa7-2898-40f3-a0b8-06c170e538bd" width = "300" height = "150">
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/36c91fa7-2898-40f3-a0b8-06c170e538bd" width = "400" height = "200">
 
 __Bước 1__ : Master kéo chân __SS__ từ high xuống low để báo hiệu cho slave biết sẵn sàng nhận data
 
@@ -76,36 +76,45 @@ __Bước 5__: Master lặp lại quá trình cho đến khi đủ 8 bit, sau đ
 __a) chế độ truyền__
 
 + SONG CÔNG (__Full-duplex__): Master sẽ vừa truyền và nhận data trong 1 thòi điểm
-<img src = "https://github.com/user-attachments/assets/092df91e-97d4-4497-9765-1160ead3c8e8" width = "300" height = "150">
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/092df91e-97d4-4497-9765-1160ead3c8e8" width = "400" height = "200">
 
 + BÁN SONG CÔNG (__Half-duplex__): Master chỉ có thể truyền hoặc nhận data trong 1 thời điểm
 
-<img src = "https://github.com/user-attachments/assets/2d508edb-ca9d-4b4a-aa15-beb7ffb853b3" width = "300" height = "150">
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/2d508edb-ca9d-4b4a-aa15-beb7ffb853b3" width = "400" height = "200">
 
 + ĐƠN CÔNG (__Simplex__): Master chỉ có thể truyền mà không nhận data từ slave
 
-<img src ="https://github.com/user-attachments/assets/10d04e7e-4476-4c7c-b567-0c6df1451777" width = "300" height = "150">
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/10d04e7e-4476-4c7c-b567-0c6df1451777" width = "400" height = "200">
 
 __b) CPOL và CPHA__
 
 __SCK Phase__ : trạng thái idle (không có dữ liệu) trên chân __SCK__ 
 + __CPOL = 0__ : ở mức __low__
 + __CPOL = 1__ : ở mức __high__
+
+<p align = "center">
 <img src = "https://github.com/user-attachments/assets/30fbff03-5271-40de-8124-e9e55cba50dc" width = "300" height = "150">
 
 __SCK Polarity__: trạng thái của clk mà slave chọn để đọc data
 
 + __CPHA = 0__ : ở cạnh đầu tiên của clk
 
+<p align = "center">
 <img src = "https://github.com/user-attachments/assets/018f963f-2e1a-4951-837e-df80bd7f4e89" width = "300" height = "150">
 + __CPHA = 1__ : ở cạnh tiếp theo của clk
 
+<p align = "center">
 <img src = "https://github.com/user-attachments/assets/4e116f1e-b2d0-4b60-b2e9-68c97cb6bd9d"width = "300" height = "150">
 
 __c) Tốc độ__
 
 phụ thuộc vào nguồn clock đầu vào như HSE/HSI/PLL và qua bộ chia tầng của bus mà nó nối đến
 
+<p align = "center">
 >img src = "https://github.com/user-attachments/assets/7c83f489-7e59-496e-932d-de1da97855d2" width = "300" height = "150">
 
 __d) Slave management__
@@ -117,8 +126,9 @@ __+ Hardware__ : Chân CS sẽ hoàn toàn được điều khiển bởi phần
 __+ Software__ : Chân CS có thể được kiểm soát bởi phần mềm   
 
 # 2. Giao thức I2C 
+
 <p align = "center">
-<img src ="https://github.com/user-attachments/assets/9263d619-0f5d-442f-a9ea-90d45500e926" width = "300" height = "150">
+<img src ="https://github.com/user-attachments/assets/9263d619-0f5d-442f-a9ea-90d45500e926" width = "400" height = "200">
 
 ## 2.1 Giới thiệu về I2C 
 
@@ -147,13 +157,14 @@ __d. Cấu hình Open-drain trong I2C__
 Trong 1 bus i2c, các thiết bị slave khi kết nối thường sẽ không thể tự điều khiển trạng thái trên chân của nó mà phải phụ thuộc vào master để kéo chân xuống mức __LOW__ để bắt đầu giao tiếp. Chính vì vậy chúng sẽ được đặt ở trạng thái là __open-drain__ nghĩa là điện áp trên chân sẽ được thả nổi hoặc kéo xuống __LOW__. Mà vi điều khiển (__master__) thường sẽ không hiểu được mức tín hiệu điện áp không cụ thể để điều khiển slave. Chính vì vậy các slave đều sẽ được mắc lên i2c bus kèm với __điện trở pull-up___ để luôn giữ chúng ở múc __HIGH__ 
 
 <p align = "center">
-<img src ="https://github.com/user-attachments/assets/9cc210e8-8f9c-49fc-851b-39d36a1f3526" width = "300" height = "150">
+<img src ="https://github.com/user-attachments/assets/9cc210e8-8f9c-49fc-851b-39d36a1f3526" width = "400" height = "200">
 
  __=>__ Nhờ đó khi master đã giao tiếp xong với slave,nó sẽ nhả chân sda vs scl của slave đó về mức __high__ trở lại nhờ cơ chế __open drain__ và __điện trở pull-up__ chứ slave hoàn toàn không tự điều khiển được điện trên chân cửa nó   
 
 ## 2.2 Quá trình truyền I2C 
 
 ### 2.2.1 Khung dữ liệu
+
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/100bceb3-865a-450e-989b-5b912f79eb79" width = "500" height = "250">
 

@@ -23,6 +23,7 @@ __c. Ưu điểm__
 + dữ liệu truyền chính xác và nhanh chóng ỏ khoảng cách ngắn
 + Không cần địa chỉ riêng biệt cho mỗi slave để master chọn giao tiếp
 + dữ liệu được truyền theo 2 chiều cùng lúc.
+
 __d. Nhược điểm__ 
 
 + Sử dụng nhiều dây hơn so với các giao thức khác
@@ -105,6 +106,7 @@ __SCK Polarity__: trạng thái của clk mà slave chọn để đọc data
 
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/018f963f-2e1a-4951-837e-df80bd7f4e89" width = "300" height = "150">
+
 + __CPHA = 1__ : ở cạnh tiếp theo của clk
 
 <p align = "center">
@@ -115,7 +117,7 @@ __c) Tốc độ__
 phụ thuộc vào nguồn clock đầu vào như HSE/HSI/PLL và qua bộ chia tầng của bus mà nó nối đến
 
 <p align = "center">
->img src = "https://github.com/user-attachments/assets/7c83f489-7e59-496e-932d-de1da97855d2" width = "300" height = "150">
+<img src = "https://github.com/user-attachments/assets/7c83f489-7e59-496e-932d-de1da97855d2" width = "300" height = "150">
 
 __d) Slave management__
 
@@ -147,6 +149,7 @@ __b. Ưu điểm__
 + Chỉ sử dụng 2 dây 
 + tích hợp cơ chế gửi bit ACK/NACK để xác nhận quá trình truyền/nhận data
 + Khoảng cách truyền lớn hơn so với spi
+
 __c. Nhược điểm__
  
 + Khung truyền phức tạp hơn so với spi và uart
@@ -154,7 +157,7 @@ __c. Nhược điểm__
 
 __d. Cấu hình Open-drain trong I2C__
 
-Trong 1 bus i2c, các thiết bị slave khi kết nối thường sẽ không thể tự điều khiển trạng thái trên chân của nó mà phải phụ thuộc vào master để kéo chân xuống mức __LOW__ để bắt đầu giao tiếp. Chính vì vậy chúng sẽ được đặt ở trạng thái là __open-drain__ nghĩa là điện áp trên chân sẽ được thả nổi hoặc kéo xuống __LOW__. Mà vi điều khiển (__master__) thường sẽ không hiểu được mức tín hiệu điện áp không cụ thể để điều khiển slave. Chính vì vậy các slave đều sẽ được mắc lên i2c bus kèm với __điện trở pull-up___ để luôn giữ chúng ở múc __HIGH__ 
+Trong 1 bus i2c, các thiết bị slave khi kết nối thường sẽ không thể tự điều khiển trạng thái trên chân của nó mà phải phụ thuộc vào master để kéo chân xuống mức __LOW__ để bắt đầu giao tiếp. Chính vì vậy chúng sẽ được đặt ở trạng thái là __open-drain__ nghĩa là điện áp trên chân sẽ được thả nổi hoặc kéo xuống __LOW__. Mà vi điều khiển (__master__) thường sẽ không hiểu được mức tín hiệu điện áp không cụ thể để điều khiển slave. Chính vì vậy các slave đều sẽ được mắc lên i2c bus kèm với __điện trở pull-up___ để luôn giữ chúng ở mức __HIGH__ 
 
 <p align = "center">
 <img src ="https://github.com/user-attachments/assets/9cc210e8-8f9c-49fc-851b-39d36a1f3526" width = "400" height = "200">

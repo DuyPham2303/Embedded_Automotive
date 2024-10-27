@@ -199,7 +199,9 @@ __Bước 5__: slave sau khi nhận xong data sẽ phản hồi 1 bit__ACK__, b�
 
 __Bước 6__: Quá trình truyền lặp đi lặp lại đến khi toàn bộ dữ liệu được gửi xong, lúc này slave sẽ không phản hồi bit __ACK__, đường __SDA__được giữ ở mức __high__, lúc này master hiểu rằng slave không muốn nhận data nữa và nó sẽ gửi điều kiện __Stop__ để kết thúc quá trình giao tiếp với slave
 
-#3. Giao thức UART
+# 3. Giao thức UART
+## 3.1 Giới thiệu về UART
+
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/f043e57b-4525-4e2a-8616-e454c16f9e08" width = "600" height = "200">
 ##3.1 Giới thiệu về UART

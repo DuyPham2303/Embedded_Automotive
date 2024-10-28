@@ -6,13 +6,17 @@ __Tại sao phải sử dụng ngắt__
 
 Xem xét chương trình dùng để kiểm tra trạng thái nút nhấn trong hàm main như sau không sử dụng ngắt
 
-![image](https://github.com/user-attachments/assets/6feaaec7-d59e-42de-abd8-5b2416f884e9)
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/6feaaec7-d59e-42de-abd8-5b2416f884e9" width = "300" height = "350">
+
 + Hàm kiểm tra trạng thái nút nhấn sẽ được gọi liên tục, tuy nhiên trong 1 chương trình đương nhiên chúng ta sẽ còn rất nhiều các hàm và câu lệnh khác chạy cùng 1 lúc, và chương trình sẽ xử lý lần lượt các lệnh từ trên xuống dưới chứ không phải cùng 1 lúc. 
 + Vì vậy ở 1 thời điểm nào đó khi ta nhấn nút, chương trình lại đang xử lý ở các vị trí khác trong chương trình ví dụ như hàm __delay()__. Thì lúc này tín hiệu từ nút nhấn sẽ không được đọc, dẫn đến những lệnh thực thi khác dựa trên tín hiệu từ nút nhấn sẽ không được thực hiện, làm sai chương trình
 
 Trường hợp khi ta xử lý ngắt trên nút nhấn sẽ khắc phục được tình trạng trên như sau
 
-![image](https://github.com/user-attachments/assets/0aef92c1-3ebc-48ab-8e79-02ded4234560)
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/0aef92c1-3ebc-48ab-8e79-02ded4234560" width = "400" height = 300">
+
 + Lúc này sẽ không cần 1 hàm kiểm tra điều kiện nút nhấn trong chương trình chính. Việc xử lý tín hiệu từ nút nhấn sẽ phụ thuộc vào 1 bộ ngắt ngoài (EXTI), và chỉ xử lý yêu cầu từ nút nhấn mỗi khi ta nhấn nút. Dẫn đến chương trình sẽ trở nên linh hoạt, và được xử lý nhanh chóng đối với các tín hiệu đến từ bên ngoài.
 
 __Lợi ích của ngắt__ 
@@ -40,7 +44,8 @@ __LOW STATE__: tín hiệu ngắt được phát hiện khi ở mức LOW
 
 __QUY TRÌNH XỬ LÝ NGẮT BÊN TRONG HARDWARE__
 
-![image](https://github.com/user-attachments/assets/3e99b3dd-146d-4393-b6c2-86652f110df9)
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/3e99b3dd-146d-4393-b6c2-86652f110df9" width = "600" height = "300">
 
 + __Bước 1__: bộ EXTI phát hiện tín hiệu ngắt trên 1 chân GPIO nào đó, và kích hoạt __IRQ_Number__ tương ứng với bộ EXTI đó
 + __Bước 2__: Tín hiệu sẽ được gửi đến __NVIC__ để báo hiệu cho CPU biết có 1 ngắt xảy ra

@@ -1,4 +1,4 @@
-# 1. Interrupt 
+# 1. Interrupt
 ## 1.1 Khái niệm
 Ngắt là 1 tín hiệu khẩn cấp được kích hoạt bởi những tín hiêu đếnu72 trong hoặc ngoài phần cứng trên vi điều khiển, mục đích là để báo cho CPU biết phải tạm dừng luồng thực thi chương trình hiện tại để nhảy đến 1 hàm thủ tục ngắt (ISR) để xử lý 1 công việc nào đó, xong rồi mới trở lại thực hiện tiếp công việc trước đó trong chương trình chính
 

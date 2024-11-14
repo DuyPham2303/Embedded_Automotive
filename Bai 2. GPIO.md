@@ -1,4 +1,3 @@
-
 # BÀI 2: GPIO
 
 ## 1. Khởi tạo project trên KeilC

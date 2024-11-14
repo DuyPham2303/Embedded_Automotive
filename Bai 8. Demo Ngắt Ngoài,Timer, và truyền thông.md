@@ -1,10 +1,6 @@
 
-# Project Title
 
-A brief description of what this project does and who it's for
-
-# Configure STM32F4 for using (External/Timer/UART) Interrupt 
-# 1. External Interrupt
+# 1.Ngắt Ngoài
 Ta sẽ làm 1 ví dụ đơn giản để mô phỏng cách mà ngắt ngoài hoạt động thông qua việc nhấn nút và tăng biến count mỗi khi có 1 tín hiệu ngắt được phát hiện
 ## 1.1 Setup chương trình
 Để lập trình cho các chức năng liên quan đến interrupt ta sẽ cần phải include thư viện __#include<misc.h>__ chứa các hàm liên quan đến cấu hình __NVIC__ (bộ quản lý các ngắt và kích hoạt các hàm ISR)
@@ -157,8 +153,79 @@ void EXTI0_IRQHandler(){
 	EXTI_ClearITPendingBit(EXTI_Line0); //xóa cờ ngắt để tránh chương trình phát hiện ngắt liên tục
 }
 ```
+# 2. Ngắt Timer
 
-# 2. Timer Interrupt
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/375bad91-5e5a-4b8c-9346-750a471063c4" width = "700" height = "250">
+
++ Khi sử dụng Interrupt với timer thì khi giá trị trong thanh ghi đếm đạt đến giá trị lưu trong thanh ghi ARR thì sẽ có 1 cờ ngắt được kích hoạt báo về cho CPU để nhảy vô hàm ISR để thực hiện mà ta lập trình 
+
+## 2.1 Lập trình chớp tắt led sau mỗi 1s 
+### a) Cấu hình ngắt timer 
+
+Để tạo ra ngắt timer sau mỗi 1s thì ta sẽ làm như sau với:
++ __TIM_Period:__ giá trị tràn của timer sau mỗi 1s
++ __TIM_ITConfig():__ hàm cho phép kích hoạt ngắt timer với cờ ngắt là __TIM_IT_UPDATE__
+
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/6aa1cf60-bc02-4f1a-b4b6-87a2e40e2c4f" width = "700" height = "250">
+
+### b) Hàm thực thi ngắt timer
++ Đầu tiên ta sẽ kiểm tra cờ ngắt có được set hay không
++ Tiếp theo ta tạo ra 1 biến để tăng giá trị lên 1 lần tương ứng với thời gian 1s
++ Cuối cùng ta thực hiện xóa cờ ngắt để tránh cho chương trình nhảy vào hàm ISR liên tục 
+
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/201420b3-5e49-4feb-b123-1cf59827f42f" width = "500" height = "150">
+
+### c) Viết hàm nháy led trong chương trình chính
++ Ta sẽ kiểm tra giá trị của biến tim_cnt_1s được xử lý trong hàm ISR để điều khiển trạng thái của chân GPIO như sau
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/1071cae0-6417-4732-8e56-b706039836c3" width = "600" height = "150">
+
+# 3. Ngắt truyền thông
+Được sử dụng khi ta muốn truyền/nhận dữ liệu khi có 1 sự kiện ngắt tương ứng để báo cho CPU việc truyền/nhận đã hoàn tất và ta sẽ tiến hành xử lý dữ liệu. 
+
+## 3.1 Lập trình ngắt USART
+__Ví du:__ ta sẽ cấu hình USART để nhận data gửi từ 1 terminal, sau đó sẽ gửi ngược lại data đó để đảm bảo quá trình nhận thành công.
+
+### a) Cấu hình bộ USART 
++ Ta sẽ cấu hành các tham số của bộ USART như thông thường tuy nhiên ta sẽ sử dụng hàm USART_ITConfig để kích hoạt tính năng ngắt cho ngoại vi, cùng với cờ __USART_IT_RXNE__ cho biết 1 ngắt sẽ được kích hoạt khi quá trình nhận dữ liệu hoàn tất
+
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/43fcd614-998b-43e5-acaa-bb3d25186fc8" width = "650" height = "250">
+
++ Cấu hình chân GPIO cho bộ USART 
+
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/e4543196-d97c-4fa0-a0e9-afc980051a1b" width = "650" height = "250">
+
+### b) Cấu hình NVIC 
++ Ta sẽ cấu hình các tham số về các mức ưu tiên ngắt cũng như IRQ number tương ứng với ngoại vi mà ta sử dụng, để mỗi khi có ngắt xảy ra chương trình sẽ nhảy vào đúng hàm ISR tương ứng với IRQ number qđó 
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/d9325f6b-233f-4471-bdb5-38f12f52b330" width = "650" height = "250">
+
+### c) Xử lý công việc khi hàm ISR được gọi
+
++ Mỗi khi data được nhận thành công, thì bộ USART sẽ tạo ra 1 ngắt để CPU gọi ra hàm ISR để thực thi các công việc mà ta mong muốn
+
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/1d7a750e-6d5b-47b6-a215-5c74657d3311" width = "650" height = "350">
+
++ Hàm __USART_SSend__ được viết như sau 
+
+<p align = "center">
+<img src ="https://github.com/user-attachments/assets/c1c7bd8d-8cab-4327-a44e-415adae826e1" width = "550" height = "250">
+
+### d) Chạy phần mềm hercules và debug chương trình
+
+
+
+
+
+
+
+
 
 
 

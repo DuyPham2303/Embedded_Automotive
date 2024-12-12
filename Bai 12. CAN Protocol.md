@@ -217,6 +217,8 @@ __EOF AND ITF__
 
 + Khi bên node nhận đang bận thì nó sẽ gửi frame này cho bên truyền để tạm dừng việc truyền dữ liệu 
 
+CAN FILTER
+
 
 
 

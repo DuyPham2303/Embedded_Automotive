@@ -20,3 +20,4 @@ header(write): master nhận response từ slave
 + ứng dụng cho các hệ thống không yêu cầu độ an toàn hay tốc độ cao 
 + Kết nối các thành phần chi phí thấp 
 + Sử dụng gateway để giao tiếp với CAN 
+KHUNG TRUYỀN CAN

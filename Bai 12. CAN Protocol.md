@@ -177,12 +177,45 @@ __RTR bit__ (Remote Transmission Request)
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/1e028425-d5de-4d2d-a54e-603a12b56708" width = "650" height = "250">
 
++ RTR bit = 0(dominant) -> message truyền đi (data frame)
++ RTR bit = 1(recessive) -> yêu cầu message (remote frame) và không chứa data field
+
 __DLC, DATA and CRC Fields__
+
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/0705a074-fbdb-4959-a160-63373eb404ab" width = "650" height = "250">
 
++ Gồm 4-bit xác định kích thước của message
++ Gồm 8-bit xác định message truyền đi
++ Gồm 15-bit checksum để kiểm tra lỗi (Node nhận sẽ tính toán trường CRC field của chính nó và kiểm có trùng với CRC field của node truyền không -> nếu trùng message nhận được thành công) -> gửi lại 1 bit ACK 
 
+__EOF AND ITF__
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/48e74943-fd33-4aaf-8068-16b23281021b" widht = "650" height = "250">
 
++ Gồm 7-bit EOF ở trạng thái recessive để kết thúc
++ Gồm 3-bit ITE recessive để bus vào trạng thái IDLE trước khi gửi SOF
+
+### b) REMOTE FRAME
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/5c6e99a9-000d-4439-90b9-aef0b8489a65" widht = "650" height = "250">
+
++ Giống vói dataframe ngoại trừ không có data field, và bit RTR sẽ mặc định là 1 (recessive) để chờ nhận message từ node khác
+
+### c) ERROR FRAME
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/3be16771-1a63-4834-ae36-0711b07abb3b" widht = "650" height = "250">
+
++ Khung này sẽ được kiểm tra bởi CRC field bên node nhận, và nếu có lỗi xảy ra nó sẽ bỏ qua frame này
+
+### d) OVERLOAD FRAME
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/ffc60e76-98d2-45dc-9a77-ad6f7de7477b" widht = "650" height = "250">
+
++ Khi bên node nhận đang bận thì nó sẽ gửi frame này cho bên truyền để tạm dừng việc truyền dữ liệu 
 
 
 

@@ -97,6 +97,117 @@ __+ Hàm ghi và đọc ra 1 giá trị kiểu float__
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/997b258d-efd6-4691-a983-6e71719a0236" width = "700" height = "300">
 
+# 2. BOOT LOADER
+
+## 2.1 Tổng quan
+bootloader là 1 chương trình nhỏ bên trong flash sẽ được chạy tự động khi MCU được cấp nguồn và làm những nhiệm vụ sau: 
++ Khởi tạo môi trường để chạy hệ điều hành 
++ Khởi tạo firmware __(chương trình chính)__ mà ta muốn chạy
+
+## 2.2 Ứng dụng 
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/15fecc8a-1d5e-47b3-9b70-b32f5e59166b" width = "600" height = "300">
+
++ Bootloader cò thể được kết hợp với FOTA __(firmware - Over The Air)__ để cập nhật chương trình từ xa (Wifi), giúp tối ưu hóa về thời gian, công sức và chi phí so với cách truyền thống.
+
+## 2.3 Cách Bootloader xử lý firmware 
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/e74506e3-057f-4f6b-919c-3e3fe670173a" width = "600" height = "300">
+
+Ta sẽ có 1 ví dụ để mô tả cách mà bootloader hoạt động như trên. Ta sẽ tiến hành cập nhật firmware là 1 chương trình blinkled cho stm32 với các bước 
++ Tải file hex lên mạng 
++ Esp32 lấy file này thông qua kết nối Wifi
++ Esp32 gửi file hex thông qua uart cho stm32
++ bootloader nhận file hex và tiến hành chạy 
+
+### a) Các thành phần trong FLASH
+__Tại 0x08000000__
+
++ Địa chỉ bắt đầu của FLASH
++ Chứa chương trình bootloader 
+
+__Tại 0x08008000__
+
++ Địa chỉ của firmware (chương trình chính)
++ Đây là nơi mà bootloader cần lái MCU đến để nó thực thi __(vì bản thân MCU không thể chạy 1 chương trình lưu ở vùng nhớ khác)__ 
+
+__Tại 0x0801FFF__
+
++ Đây là địa chỉ kết thúc của FLASH
+
+### b) Nhiệm vụ của bootloader trong ví dụ trên
++ Nhận file hex thông qua uart 
++ Lưu firmware vào flash tại địa chỉ mà nó sẽ thực thi sau này và thực hiện 1 số công việc sau đây để MCU có thể nhảy đến đó và chạy firmware
+
+__+ Thiết lập MSP cũng như vector table phù hợp với firmware__
+__+ Nhảy đến RESET HANDLER của firmware đó__  
+## 2.2 Quá trình hoạt động 
+### a) Khi không sử dụng bootloader 
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/7f04e9e1-c28b-460c-b57f-f73052eef9d9" width = "650" height = "350">
+
++ Sau khi cấp nguồn cho MCU
++ Tiến hành đọc chân boot0 và boot1 để xác định vùng nhớ sẽ bát đầu đọc dữ liệu
++ Thanh ghi PC sẽ lưu địa chỉ bát đầu của vùng nhớ đó để bát đầu quá trình đọc lệnh
++ Lấy dữ liệu ở ô nhớ đầu tiên để khởi tạo MSP
++ PC nhảy đến ô nhớ tiếp theo là reset hanlder 
++ Tại reset handler sẽ thực hiện khởi tạo các dữ liệu cần thiết để chạy firmware như tải data từ flash xuống RAM, cuối cùng là nhảy đến hàm main() để thực thi 
+
+### a) Khi có sử dụng bootloader 
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/93427643-7f28-4630-9a68-bdfc8038e091" width = "500" height = "350">
+
++ Sau Khi cấp nguồn và khởi động MCU 
++ Vi xử lý sẽ nhảy đến reset hanlder của chương trình boot 
++ tiếp tục nhảy đến hàm main() của boot 
++ PC tiến hành đọc lấy ra dữ liệu của ô nhớ đầu tiên mà lưu firmware(application program)
++ Gọi hàm bootloader để gán thanh ghi __SCB__ theo địa chỉ của firmware 
++ PC nhảy đến reset handler của firmware để khởi tạo hệ thống 
++ Lúc này firmware đã chính thức được chạy, nên dù nhấn reset chương trình boot sẽ không còn được gọi nữa mà vẫn chạy trong application __(do lúc này MCU đạ nhận diện reset handler được lưu ở địa chỉ mới)__ 
+## 2.3 Lập trình bootloader
+
+Đầu tiên ta sẽ viết hàm boot để lái MCU sang địa chỉ của firmware mà ta muốn nó thực thi sau khi được cấp nguồn 
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/db40f2bc-0701-42af-870b-e2d5d1eee2ca" width = "650" height = "250">
+
+__Định nghĩa địa chỉ bát đầu của firmware__
+
++ ADDR_STR_BLINK cần được khai báo ở địa chỉ cách xa vùng nhớ lưu chương trình hệ thống bao gồm bootloader trong khoảng 0x08000000 - 0x08007FFF. Do đó ta chọn giá trị là 0x08008000
++ Vectoe table của firmware cũng được lưu tại địa chỉ trên
+
+__Bước 1: Reset RCC về mặc định__
+
++ Đảm bảo các xung nhịp của ngoại vi ổn định trước khi chuyển tiếp sang firmware 
+
+__Bước 2: Vô hiệu hóa các line ngắt__
+
++ Để đảm bảo an toàn trong việc tránh xung đột liên quan đến ngắt khi bootloader lái MCU sang chương trình applicaion (firmware), 
+
+__Bước 3: Cập nhật Stack Pointer__
+
++ lấy địa chỉ đầu tiên của vector table chính là SP của chương trình application (firmware) và gán cho thanh ghi SP của MCU 
++ Điều này cần thiết vì stack của bootloader và chương trình application là khác nhau
+
+__Bước 4: Cập nhật thanh ghi VTOR__ 
+
++ Để trỏ tới vector table của chương trình application tại ADDR_STR_BLINK
++ Mục đích là để đảm bảo MCU gọi đúng những hàm ISR khi có ngắt xảy ra từ vector table của của chương trình application chứ không pah3i bootloader 
+
+__Bước 5: Lấy địa chỉ reset handler của chương trình application__
+
++ Mục đích là để khởi tạo các dữ liệu cần thiết như các biến và vùng nhớ, và cũng là nơi bắt đầu chạy chương trình
+
+__Bước 6: dùng con trỏ hàm để lưu địa chỉ của reset handler__
+
++ Mục đích là để sử dụng con trỏ này để nhảy tới chương trình application
+
+__Bước 7: Thực thi chương trình application__
+
++ Truy cập vào chương trình application bằng cách gọi ra con trỏ hàm 
+
 
 
 

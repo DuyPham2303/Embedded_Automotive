@@ -217,7 +217,92 @@ __EOF AND ITF__
 
 + Khi bên node nhận đang bận thì nó sẽ gửi frame này cho bên truyền để tạm dừng việc truyền dữ liệu 
 
-CAN FILTER
+# 3. Quá trình cấu hình và thiết lập
+## 3.1 Thiết lập baudrate 
++ Khi các node giao tiếp với nhau trên mạng CAN thì sẽ cần phải được cấu hình đồng bộ về mặt thời gian để có thể truyền thông dữ liệu 1 cách ổn định. Lý do là vì Hệ thống ô tô rất phức tạp và nhiễu cực kỳ lớn. Chính vì vậy cần phải điều chỉnh thời gian chính xác để dữ liệu có thể được truyền tải 1 cách ổn định mà không bị lỗi. Do 1 số 
+### a) Sampling Point 
++ Thời điểm mà tín hiệu trên CAN bus được đọc để xác định 1 bit là dominant (0) hay recessive (1)
++ Được tính toán dựa trên phần trăm thời gian 1 bit. Thời điểm lý tưởng là 75 - 90% thời gian 1 bit
+### b) Time Quatum và Bit Timing
+
+__Time quantum__ 
+
++ Đơn vị thời gian nhỏ nhất mà 1 bit được chia ra
++ Xác định dựa trên Clock của CAN và prescaler
++ Một bit thưỡng sẽ chia thành nhiều segment, với mỗi segment có 1 số lượng time quantum nhất định
+
+__Bit timing__
+
++ Thời gian truyền đi của 1 bit
++ Chính là tổng số time quantum 
+
+### c) Time segmnet
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/91b8f96b-f46f-4702-ae25-bc1712cd7020" widht = "650" height = "250">
+
+Đây là thành phần để đồng bộ và điều chỉnh thời gian giao tiếp giữa các node CAN. Được chia làm 4 phần
+
+__Syn Segment__
+
++ Độ dài cố định là 1 tq
++ giúp các node biết được sự bắt đầu của 1 bit tại 1 thời điểm để tiến hành xử lý
++ Nó phát hiện bằng cách theo dõi sự chuyển đổi rising/falling edge của tín hiệu CAN để hiệu chỉnh thời gian của chính nó -> đãm bảo đồng bộ với các node trên bus
+
+__Propagation segment__
+
++ Bù đắp khoảng thời gian trễ của tín hiệu khi truyền trên can bus từ sender đến receiver 
++ Đoạn này sẽ được điều chỉnh dựa trên __chiều dài bus__ và __tốc độ truyền__
++ Được cấu hình hợp lý để đồng bộ được với __độ trễ lang truyền__ và __thời gian trễ xử lý__ trên phần cứng CAN
+
+__Phase segment 1:__ 
+
++ Khoàng thời gian được đièu chỉnh trước khi lấy mẫu, đảm bảo clock được đồng bộ với thời gian thực tế trên bus do ảnh hưởng từ độ dài bus hoặc nhiễu 
+__Phase segment 2:__ 
+
++ Khoảng thời gian được điều chỉnh sau lấy mẫu, đảm bảo các node đồng bộ clock với nhau (do sự sai lệch nhỏ giữa các node)
+
+=> Nếu cạnh tín hiệu đến sớm : Đoạn này có thể kéo dài
+=> Nếu cạnh tín hiệu đến trễ : Đoạn này có thể rút ngắn 
+
+__Tỗng thời gian của 1 bit và baudrate__
+
++ bit_timing = Sync + Propagation + phase1 + phase2
+
++ Baudrate = 1 / bit_timing (bps)
+
+## 3.2 Thiết lập bộ lọc
+Ta biết rằng CAN là một giao thức truyền thông quản bá __(broadcast protocol)__ ,nghĩa là 1 node trên bus có thể lắng nghe thống điệp gửi từ các node khác. Tuy nhiên node nhận ở mỗi thời điểm chỉ xử lý 1 thông điệp duy nhất và ta cần có 1 cơ chế để giúp node xử lý đúng thông điệp mà nó muốn và loại bỏ đi những phần không quan trọng. Chính vì vậy bộ lọc CAN sẽ giải quyét vấn đề đó
+### a) Tại sao nó cần thiết
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/09a67832-e9a8-4dad-87c9-da3812fc4bcf" widht = "500" height = "200">
+
+
+Bộ lọc là 1 thành phần cần thiết vì nó cho phép node nhận chỉ xử lý những thông điệp mà nó muốn và bỏ qua những cái không quan trọng giúp 
++ Giảm tải quá trình xử lý cho MCU
++ Giảm băng thông để bus hoạt động hiệu quả hơn
+### b) Các thành phần 
+
+__Mask__ 
+
+__+ Đặc điểm:__ là 1 chuỗi các bit với 
+=> các bit 1: được dùng để kiểm tra ở 1 phần nào đó của ID. 
+=> các bit 0: ở các vị trí tương ứng trên ID mà không cần quan tâm
+__+ Chức năng:__ Được dùng để xác định phạm vi ID mà node quan tâm (thông điệp cho phép xử lý)
+=> Những bit của ID mà ta muốn kiểm tra thì mask sẽ đặt giá trị tại các vị trí tương ứng lên 1 và tiến hành áp dụng lên ID bằng cách thực hiện phép logic AND
+
+__Filter__
+
+__+ Đặc điểm:__ chuỗi các bit mà ID phải khớp với sau khi đã áp dụng bọ lọc 
+
+__+ Chức năng:__ So sánh với kết quả của ID sau khi đã áp dụng mask, nếu trùng khớp thì cho phép xử lý, nếu không thì loại bỏ
+
+
+
+
+
+
 
 
 

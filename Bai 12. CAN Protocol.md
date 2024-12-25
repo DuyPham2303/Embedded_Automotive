@@ -64,7 +64,7 @@ __CAN Transceiver:__ mạch chuyển đổi tín hiệu (digital) từ MCU sang 
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/45912bd1-40ff-43a2-80d5-2035c4720a16" width = "500" height = "250">
 
-__Dominant state:__ Được xác định bằng hiệu điện thế chêch lệch giữa 2 dây CAN H và CAN L __(applied voltage CAN H > CAN L)__ 
+__Dominant state:__ Được xác định bằng hiệu điện thế __(giá trị tuyệt đối)__ chêch lệch giữa 2 dây CAN H và CAN L __(applied voltage CAN H > CAN L)__ 
 
 __+ Với:__ V diff ≥ 1.5V (theo tiêu chuẩn ISO 11898-2)
 
@@ -74,9 +74,11 @@ __+ Với:__ −0.5V ≤V diff ≤0.5V (theo tiêu chuẩn ISO 11898-2)
 
 ### b) Ảnh hưởng và phương pháp khử nhiễu trên CAN BUS
 
-Khi dữ liệu truyền trên 1 mạng CAN, thì nó sẽ bị ảnh hưởng bởi những sóng phản xạ ở 2 đầu của CAN bus dẫn đến gây lỗi và xung đột dữ liệu vì vậy ta sẽ cần phải: 
+__Ảnh hưỡng của sóng phản xạ__
 
-__+ Mác điện trở 120 Ohm ở cuối 2 đầu bus:__ giá trị điện trở này trùng với giá trị của trở kháng (Impedance Z) cấu tạo nên đường bus CAN do đó trung hòa và triệt tiêu ảnh hưởng của sóng phản xạ ở 2 đầu dây
+Hiện tượng này diễn ra do tín hiệu phản xạ lại trên đường truyền dữ liệu ở trên mạng CAN dẫn đến gây lỗi và sai lệch dữ liệu lý do là vì CAN BUS yêu cầu trở kháng cấu tạo nên đường dây cáp, và các thiết bị trên mạng CAN phải đồng nhất __(nếu không 1 phần tín hiệu sẽ phản xạ lại ở điểm trỏ kháng không đồng nhất)__ , do đó ta sẽ có 1 số phương pháp sau để giải quyết được vấn đề đó
+
+__+ Mác điện trở 120 Ohm ở cuối 2 đầu bus:__ giá trị điện trở này trùng với giá trị của trở kháng (Impedance Z) đường bus CAN quyết định dựa trên cấu tạo của nó bao gồm __(tiết diện,độ dài,vật liệu của dây)__ do đó trung hòa và triệt tiêu ảnh hưởng của sóng phản xạ ở 2 đầu dây
 
 __+ Xoắn 2 dây CAN H và CAN L với nhau:__ mục đích là để cân bằng mức nhiễu giữa 2 đầu dây, và nhờ vào tín hiệu vi sai để triệt tiêu chúng
 
@@ -91,7 +93,7 @@ V_HIGH = 3.5V + 1V = 4.5V
 
 V_LOW = 1.5V + 1V = 2.5V
 
-=> => V differential = 4.5 - 2.5 = 2V
+=> V differential = 4.5 - 2.5 = 2V
 
 __Qua đó ta thấy được cách mà tín hiệu vi sai đã triệt tiêu giá tín hiệu nhiễu ở 2 đầu dây__ 
 
@@ -108,7 +110,7 @@ __+ RTR:__ Được dùng để xác yêu cầu gửi/nhận của node
 
 __+ Control:__ Được dùng đẻ xác định loại CAN sủ dụng (với bit 0 là standard can 11-bit) và kích thước của message (4-bit)
 
-__+ Data:__ 8-bit data của message gửi đi
+__+ Data:__ 64-bit data của message gửi đi
 
 __+ CRC:__ kiểm tra lỗi trong quá trình truyền
 
@@ -138,7 +140,7 @@ Khi các node truyền đi message, chúng sẽ tham gia vào quá trình tranh 
 + Khi các node truyền đi cùng 1 bit giống nhau thì sẽ tiếp tục so sánh bit tiếp theo 
 + Bất kể node nào truyền đi bit 0 thì sẽ dừng quá trình tranh chấp, và chờ đến lượt sau để tiếp tục tranh chấp
 + khi bit cuối của ID field được so sánh, thì node nào có bit bằng 0 (dominant) sẽ thắng tranh chấp và được cho phép ưu tiền truyền message đi  
-+ Những node thua trong quá trình tranh chấp hiện tại sẽ đợi đến lượt tranh chấp tiếp theo để xác định Node nào được ưu tiên truyền message đi tiếp
++ Những node thua trong quá trình tranh chấp hiện tại sẽ đợi đến lượt tranh chấp tiếp theo __(lúc này message vẫn được bảo toàn mà không bị mất)__
 
 ## 2.2 Đặc điểm của CAN FRAME
 

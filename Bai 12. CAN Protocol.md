@@ -4,6 +4,8 @@
 <img src = "https://github.com/user-attachments/assets/b8dcbec0-f70b-4304-89e0-63ae13a78de7" width = "750" height = "250">
 
 Đây là 1 giao thức truyền thông được sử dụng rộng tãi trong ngành công nghiệp ô tô với các đặc trưng cơ bản như:
++ giao thức nối tiếp và song công toàn phần (full-duplex) cho phép gửi và nhận đồng thời
++ Giao tiếp theo kiểu truyển thông quảng bá (broadcast type) cho phép các node trên can bus đều có thể lắng nghe lẫn nhau
 + Tốc độ truyền cao và xa hơn so với spi,i2c,uart
 + Phần cứng đơn giản cho phép kết nối với nhiều thiết bị (ECU) trong 1 CAN BUS
 + Cơ chế xử lý nhiễu tốt đối với 1 hệ thống phức tạp và di động như ô tô (tồn tại nhiễu cực kỳ lớn)

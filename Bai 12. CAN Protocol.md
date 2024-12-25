@@ -263,6 +263,7 @@ __Phase segment 2:__
 + Khoảng thời gian được điều chỉnh sau lấy mẫu, đảm bảo các node đồng bộ clock với nhau (do sự sai lệch nhỏ giữa các node)
 
 => Nếu cạnh tín hiệu đến sớm : Đoạn này có thể kéo dài
+
 => Nếu cạnh tín hiệu đến trễ : Đoạn này có thể rút ngắn 
 
 __Tỗng thời gian của 1 bit và baudrate__
@@ -278,7 +279,6 @@ Ta biết rằng CAN là một giao thức truyền thông quản bá __(broadca
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/09a67832-e9a8-4dad-87c9-da3812fc4bcf" widht = "500" height = "200">
 
-
 Bộ lọc là 1 thành phần cần thiết vì nó cho phép node nhận chỉ xử lý những thông điệp mà nó muốn và bỏ qua những cái không quan trọng giúp 
 + Giảm tải quá trình xử lý cho MCU
 + Giảm băng thông để bus hoạt động hiệu quả hơn
@@ -287,9 +287,13 @@ Bộ lọc là 1 thành phần cần thiết vì nó cho phép node nhận chỉ
 __Mask__ 
 
 __+ Đặc điểm:__ là 1 chuỗi các bit với 
+
 => các bit 1: được dùng để kiểm tra ở 1 phần nào đó của ID. 
+
 => các bit 0: ở các vị trí tương ứng trên ID mà không cần quan tâm
+
 __+ Chức năng:__ Được dùng để xác định phạm vi ID mà node quan tâm (thông điệp cho phép xử lý)
+
 => Những bit của ID mà ta muốn kiểm tra thì mask sẽ đặt giá trị tại các vị trí tương ứng lên 1 và tiến hành áp dụng lên ID bằng cách thực hiện phép logic AND
 
 __Filter__

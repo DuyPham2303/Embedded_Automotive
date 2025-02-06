@@ -54,18 +54,45 @@ __b) Các tham số của DMA__
 
 + __DMA_M2M__: enable/diable memory to memory 
 
-+ __BufferSize__: kích thước byte muốn nhận/hoặc truyền
++ __BufferSize__:  số lượng phần tử  muốn nhận/hoặc truyền
 
-+ __MemoryBaseAddress__: địa chỉ mà dữ liện truyền đến/nhận vào
++ __MemoryBaseAddress__: địa chỉ trên RAM mà DMA sẽ đọc/ghi dữ
+  
+  __Quá trình đọc:__
+  
+  => Khi cấu hình DMA từ bộ nhớ đến ngoại vi __(Memory-to-Peripheral)__, đây là địa chỉ nguồn.
 
-+ __MemoryDataSize__: kích thước data muốn truyền/nhận
+   ```bash
+      dmaHandle.Init.Direction = DMA_MEMORY_TO_PERIPH;
+      dmaHandle.Init.MemoryBaseAddr = (uint32_t)buffer;  // buffer nằm trong RAM
+  ```
+  __Quá trình ghi:__
+  
+  => Khi cấu hình DMA từ ngoại vi đến bộ nhớ __(Peripheral-to-Memory)__, đây là địa chỉ đích.
 
-+ __MemoryInc__: enable/diable việc cộng lên địa chỉ tiếp theo để 
+   ```bash
+      dmaHandle.Init.Direction = DMA_PERIPH_TO_MEMORY;
+      dmaHandle.Init.MemoryBaseAddr = (uint32_t)&adc_buffer; // Bộ nhớ đệm ADC
+    ```
++ __MemoryDataSize__: kích thước mỗi phần tử trong bộ nhớ.
 
-+ __truyền/nhận:__ data
++ __MemoryInc__: enable/diable việc cộng lên địa chỉ tiếp theo để truyền/nhận
 
-+ __PeriBaseAddr:__ địa chỉ của ngoại vi muốn truyền/nhận data 
++ __PeriBaseAddr:__ địa chỉ của ngoại vi mà DMA sẽ truy cập
 
+    => Truyền từ bộ nhớ (RAM) đến UART (Peripheral
+  
+    ```bash
+     dmaHandle.Init.Direction = DMA_MEMORY_TO_PERIPH;
+     dmaHandle.Init.PeripheralBaseAddr = (uint32_t)&USART1->TDR;  // Địa chỉ thanh ghi truyền dữ liệu của UART1
+    ```
+    => Truyền từ ADC (Peripheral) đến RAM (Memory)
+    
+    ```bash
+      dmaHandle.Init.Direction = DMA_PERIPH_TO_MEMORY;
+      dmaHandle.Init.PeripheralBaseAddr = (uint32_t)&ADC1->DR; // Địa chỉ thanh ghi dữ liệu ADC
+    ```
+    
 + __PeriInc:__ enable/diable cộng địa chỉ thanh ghi -> di chuyển sang 
 thanh ghi khác 
 

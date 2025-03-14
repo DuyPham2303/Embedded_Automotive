@@ -55,10 +55,11 @@ __CAN Transceiver:__ mạch chuyển đổi tín hiệu (digital) từ MCU sang 
 
 
 ### a) Tín hiệu vi sai (differential signal)
+Tín hiệu được xác định dựa trên 2 đầu dây cùng truyền đi 1 loại dữ liệu nhưng có chiều ngược nhau, và giá trị điện áp thực tế sẽ được lấy bằng cách trừ đi điện áp trên lệch giữa 2 dây so với việc lấy mass làm tham chiếu so với các chuẩn giao tiếp khác. Mục đích là để khử nhiễu và giúp tín hiệu được truyền ổn 
+__Các đặc điểm chính__
 
-Đây là tín hiệu được dùng để giao tiếp giữa các node trên 1 can bus với các đặc điểm:
 + Cho phép truyền/nhận data với khoảng cách lớn 
-+ Tích hợp khả năng khử nhiễu bằng cách xác định giá trị hiệu điện thế giữa 2 đầu dây CAN H và CAN L
++ Tích hợp khả năng khử nhiễu bằng cách lấy chênh lệch điện áp giữa 2 đầu dây CAN H và CAN L
 + Tín hiệu logic 0 (dominant) và 1 (recessive) được dùng để truyèn đi các bit của message gửi bởi các Node
 
 <p align = "center">

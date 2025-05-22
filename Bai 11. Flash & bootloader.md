@@ -151,8 +151,12 @@ __+ Nhảy đến RESET HANDLER của firmware đó__
 + Tiến hành đọc chân boot0 và boot1 để xác định vùng nhớ sẽ bát đầu đọc dữ liệu
 + Thanh ghi PC sẽ lưu địa chỉ bát đầu của vùng nhớ đó để bát đầu quá trình đọc lệnh
 + Lấy dữ liệu ở ô nhớ đầu tiên để khởi tạo MSP
-+ PC nhảy đến ô nhớ tiếp theo là reset hanlder 
-+ Tại reset handler sẽ thực hiện khởi tạo các dữ liệu cần thiết để chạy firmware như tải data từ flash xuống RAM, cuối cùng là nhảy đến hàm main() để thực thi 
++ PC nhảy đến ô nhớ tiếp theo là reset handler 
++ Tại reset handler sẽ thực hiện
+  
+  => __SystemInit__ : khởi tạo các clock ngoại vi / hệ thống 
+
+  => ___main__ : khởi tạo các dữ liệu cần thiết để chạy firmware như tải data từ flash xuống RAM, cuối cùng là nhảy đến hàm main() để thực thi 
 
 ### a) Khi có sử dụng bootloader 
 

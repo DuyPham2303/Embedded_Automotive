@@ -97,9 +97,52 @@ __+ Hàm ghi và đọc ra 1 giá trị kiểu float__
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/997b258d-efd6-4691-a983-6e71719a0236" width = "700" height = "300">
 
-# 2. BOOT LOADER
+# 2. Tỏ chức bộ nhớ MCU và BOOT LOADER
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/99f8da5f-4c70-43a0-865d-c5de5b26e7c0" width = "700" height = "300">
 
-## 2.1 Tổng quan
++ Khi ta cắm điện cho MCU thì nó sẽ nhảy đến hàm main (chương trình aplication) để chạy lập tức. Cơ chế nào ? hay các bước xử lý mà MCU trải qua ? 
+
+### a. Kiến trúc MCU 
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/7247e33f-9a5e-4824-b141-66face92924d" width = "700" height = "300">
+
+### b. Các phân vùng bộ nhó 
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/dacb4a8f-4c09-43c9-8d13-840cf2e634e1" width = "700" height = "300">
+
+
+### c. Cơ chế bitbanding trong SRAM 
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/81f4e6ac-900b-4e3c-a94d-a11a3297bb9a" width = "400" height = "500">
+
++ Cho phép thao tác với từng bit trong thanh ghi 1 cách nhanh chóng bằng việc ánh xạ các bit thành các vùng địa chỉ riêng
+
+__Cách thông thường__ : trải qua các bước
+
++ truy cập vào thanh ghi thông qua SRAM
++ các phép toán bitwise được đẩy vào trong thanh ghi để thay đổi giá trị bit
++ Kết quả được trả về SRAM để đọc ra
+
+__Cơ chế bitbanding__ : ánh xạ trực tiếp đến vùng thay đổi bit
+
++ cho phép thay tác trực tiếp trên vùng địa chỉ của riêng bit đó
+
+### d. Bảng vector ngắt
+
+<p align = "center">
+<img src = "https://github.com/user-attachments/assets/ad3995a8-66ea-4f6d-9d91-3f64199af143" width = "700" height = "300">
+
++ Lưu trữ địa chỉ của các hàm xử lý ngắt, được đặt tại địa chỉ 0x0000 0000
++ Mỗi thành viên (dịa chỉ) có giá trị là 32 bit, chứa nội dung là các hàm thủ tục ngắt __ISR()__
++ Việc quản lý và thực thi các ngắt dựa trên NVIC __(Bộ quản lý ngắt lồng)__
++ Số thứ tự ưu tiên ngắt __(IQR Number)__ được NVIC sử dụng để xác định truy cập đến địa chỉ mong muốn để gọi ra __ISR()__ tương ứng
++ IQR càng thấp mức ưu tiên càng cao
+
+## 2.1 Tổng quan về bootloader
 bootloader là 1 chương trình nhỏ bên trong flash sẽ được chạy tự động khi MCU được cấp nguồn và làm những nhiệm vụ sau: 
 + Khởi tạo môi trường để chạy hệ điều hành 
 + Khởi tạo firmware __(chương trình chính)__ mà ta muốn chạy
@@ -135,39 +178,53 @@ __Tại 0x08008000__
 __Tại 0x0801FFF__
 
 + Đây là địa chỉ kết thúc của FLASH
-
 ### b) Nhiệm vụ của bootloader trong ví dụ trên
 + Nhận file hex thông qua uart 
 + Lưu firmware vào flash tại địa chỉ mà nó sẽ thực thi sau này và thực hiện 1 số công việc sau đây để MCU có thể nhảy đến đó và chạy firmware
++ Thiết lập MSP cũng như vector table phù hợp với firmware
++ Nhảy đến RESET HANDLER của firmware đó
 
-__+ Thiết lập MSP cũng như vector table phù hợp với firmware__
-__+ Nhảy đến RESET HANDLER của firmware đó__  
 ## 2.2 Quá trình hoạt động 
 ### a) Khi không sử dụng bootloader 
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/7f04e9e1-c28b-460c-b57f-f73052eef9d9" width = "650" height = "350">
 
 + Sau khi cấp nguồn cho MCU
-+ Tiến hành đọc chân boot0 và boot1 để xác định vùng nhớ sẽ bát đầu đọc dữ liệu
++ Tiến hành đọc chân boot0 và boot1 để xác định vùng nhớ sẽ bát đầu đọc dữ liệu bao gồm các vùng như
+
+   => main flash (mặc định bắt đầu từ __0x08000000__), system memory, SRAM
 + Thanh ghi PC sẽ lưu địa chỉ bát đầu của vùng nhớ đó để bát đầu quá trình đọc lệnh
+
+   => vector table sẽ được khởi tạo với hàm reset_handler() sẽ có offset address là 0x00000004
 + Lấy dữ liệu ở ô nhớ đầu tiên để khởi tạo MSP
-+ PC nhảy đến ô nhớ tiếp theo là reset handler 
+
+   => chính là initial stack pointer, dùng nó để khởi tạo MSP(__lưu trữ địa chỉ trả về của hàm__) 
++ PC nhảy đến ô nhớ tiếp theo là reset handler
+
+   => PC dịch đến ô địa chỉ kế tiếp
 + Tại reset handler sẽ thực hiện
   
-  => __SystemInit__ : khởi tạo các clock ngoại vi / hệ thống 
+  => __SystemInit__ : khởi tạo các clock ngoại vi / hệ thống, nằm trong startup code (CMSIS)
 
-  => ___main__ : khởi tạo các dữ liệu cần thiết để chạy firmware như tải data từ flash xuống RAM, cuối cùng là nhảy đến hàm main() để thực thi 
+  => ___main__ : khởi tạo các dữ liệu cần thiết để chạy firmware như tải data từ flash xuống RAM. Cụ thể
+  +  Copy .data segment từ flash → RAM
+  + Zero hóa .bss segment
+  +  gọi main() (__application code__)
 
 ### a) Khi có sử dụng bootloader 
 
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/93427643-7f28-4630-9a68-bdfc8038e091" width = "500" height = "350">
 
-+ Sau Khi cấp nguồn và khởi động MCU 
-+ Vi xử lý sẽ nhảy đến reset hanlder của chương trình boot 
++ Sau Khi cấp nguồn và khởi động MCU, nhảy đến địa chỉ 0x80000000 (__địa chỉ mặc định bootloader__)
++ Vi xử lý sẽ nhảy đến reset hanlder của chương trình boot
 + tiếp tục nhảy đến hàm main() của boot 
 + PC tiến hành đọc lấy ra dữ liệu của ô nhớ đầu tiên mà lưu firmware(application program)
-+ Gọi hàm bootloader để gán thanh ghi __SCB__ theo địa chỉ của firmware 
+  
+   => chính là địa chỉ đầu của vector table mới
++ Gọi hàm bootloader để gán thanh ghi __SCB->VTOR__ (địa chỉ của vector table của firmware)
+  
+   => thiết lập lại MSP và nhảy đến reset_handler() mới 
 + PC nhảy đến reset handler của firmware để khởi tạo hệ thống 
 + Lúc này firmware đã chính thức được chạy, nên dù nhấn reset chương trình boot sẽ không còn được gọi nữa mà vẫn chạy trong application __(do lúc này MCU đạ nhận diện reset handler được lưu ở địa chỉ mới)__ 
 ## 2.3 Lập trình bootloader

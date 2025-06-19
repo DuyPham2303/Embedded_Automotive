@@ -1,4 +1,22 @@
-# Giao thức truyền thông 
+# Giao thức truyền thông
+
+__PHƯƠNG THỨC GIAO TIẾP GIỮA CÁC MCU__
+
+Vi điều khiển thực chất chỉ là 1 bộ điều khiển số __(digital electronic device)__, nghĩa là nó chỉ có thể hiểu và xử lý được các giá trị 0 và 1 (dạng nhị phân - binary). Chính vì vậy quá trình truyền/nhận dữ liệu của chúng sẽ diễn ra như sau
++ MCU1 dịch dữ liệu gửi sang dạng nhị phân (sử dụng bảng mã Ascii để chuyển đổi)
++ gửi từng bit cho MCU2
++ MCU2 nhận tuần tự từng bit và dịch chuỗi giá trị 0 và 1 trở lại dữ liệu gốc
+
+**Vấn đề phát sinh**
++ Việc truyền/nhận sẽ luôn có 1 khoãng delay nhất định
++ Nếu MCU1 gửi nhiều hơn 1 bit có giá trị giống nhau
++ MCU2 sẽ không phân biệt được bit này là của lần gửi nào
+  => sai lệch dữ liệu do không dồng bộ và thống nhất được thời điểm giao tiếp
+
+
+
+
+
 ## 1. Giao thức SPI 
 <p align = "center">
 <img src = "https://github.com/user-attachments/assets/2bb0d6df-899c-40e8-b7dd-6fe876522e76" width = "300" height = "150">
@@ -209,11 +227,11 @@ __Bước 6__: Quá trình truyền lặp đi lặp lại đến khi toàn bộ 
 __a. Đặc điểm__
 
 Giao thức truyền nối tiếp giữa 2 thiết bị với các đặc điểm:
-+ cơ chế không đồng bộ
++ cơ chế không đồng bộ : Sử dụng thời gian quy định giữa các thiết bị thay vì xung clock để đồng bộ việc giao 
 + truyền song công 
 + sử dụng 2 dây là Tx và Rx
 + Tốc độ thường là các giá trị cụ thể như: 9600, 115200...
-
+  
 __b. Ưu điểm__
 + chỉ sử dụng 2 dây
 + khoảng cách truyền xa hơn so với i2c và spi
@@ -221,9 +239,11 @@ __b. Ưu điểm__
 
 __c. Nhược điểm__
 + Chỉ giao tiếp được giữa 2 thiết bị
-+ Cả 2 thiết bị cần phải có cấu hình tốc độ giống nhau 
++ Cả 2 thiết bị cần phải có cấu hình tốc độ giống nhau
 
-__d. Tốc độ__
+__d. Tốc dộ baud là gì ?__
+
++ Khi 2 thiết bị giao tiếp với nhau, ta muốn cả 2 sẽ truyền/nhận cứ mỗi 1ms chẳng hạn. Tuy nhiên giá trĩ này có thể chênh lệch giữa 2 MCU do khác biệt về tần số xung Clock. Chính vì vậy ra cần sử dụng 1 thông số chung để thống nhật thời gian chờ. Đó chính là baudrate. 
 
 + Để quá trình giao tiếp uart được hình thành thì cả 2 thiết bị sẽ thống nhất với nhau về tốc độ truyền được gọi là __baudrate__, hay nói cách khác thời gian để truyền đi 1 bit. Ví dụ ta __baudrate = 9600 mbs__ thì ta tính được thời gian để 1 bit truyền đi như sau
 
@@ -254,8 +274,11 @@ Cả 2 thiết bị sẽ được cấu hình giống nhau ở 1 trong 2 quy lu�
 
 __Quy luật chẵn__: đảm bảo tổng số lượng bit 1 trong 8 bit dữ liệu và bit parity là số chẵn 
 
+=> Ví dụ: nếu data chứa 3 bit 1, thì lúc này thêm 1 bit parity có giá trị 1. Dể tổng số bit 1 l2 số chẵn (4 bit 1)
 
 __Quy luật lẽ__: đảm bảo tổng số lượng bit 1 trong 8 bit dữ liệu và bit parity là số lẻ
+
+=> ví dụ : nếu data chứa 2 bit 1, thì lúc này thếm 1 bit parity có giá trị 1, để tổng số bit 1 là số lẻ (3 bit 1)   
 
 __Nhược điểm__: bit parity chỉ hiệu quả khi số lượng bit 1 trong 8 bit data là số lẻ như 1,3,5,... nhưng khi số lượng bit 1 là số chẳng như 2,4,6,... thì bit parity sẽ không nhận biết được liệu dữ liệu truyền có không 
 
